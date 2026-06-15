@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-fade-in: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #020617; /* Slate 950 */
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b; /* Slate 800 */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #312e81; /* Indigo 900 */
+}
+
+/* Ant Design styles override for clean look in dark mode */
+.custom-select .ant-select-selector {
+  background-color: #0f172a !important; /* Slate 900 */
+  border-color: #1e293b !important; /* Slate 800 */
+  color: #f8fafc !important; /* Slate 50 */
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 8px !important;
+}
+
+.custom-select .ant-select-selection-placeholder {
+  color: #64748b !important; /* Slate 500 */
+}
+
+.custom-select .ant-select-arrow {
+  color: #64748b !important;
+}
+
+/* Pagination Overrides */
+.custom-pagination .ant-pagination-item-active {
+  border-color: #6366f1 !important;
+}
+.custom-pagination .ant-pagination-item-active a {
+  color: #6366f1 !important;
+}
+.custom-pagination .ant-pagination-item:hover {
+  border-color: #818cf8 !important;
+}
+.custom-pagination .ant-pagination-item:hover a {
+  color: #818cf8 !important;
+}
+.custom-pagination .ant-pagination-prev .ant-pagination-item-link,
+.custom-pagination .ant-pagination-next .ant-pagination-item-link {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+.custom-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+.custom-pagination .ant-pagination-next:hover .ant-pagination-item-link {
+  border-color: #6366f1 !important;
+  color: #6366f1 !important;
+}
+
+/* Autocomplete popup styling */
+.ant-select-dropdown {
+  background-color: #0f172a !important; /* Slate 900 */
+  border: 1px solid #1e293b !important; /* Slate 800 */
+  padding: 4px !important;
+}
+.ant-select-item-option-active {
+  background-color: #1e1b4b !important; /* Indigo 950 */
+}
+.ant-select-item-option-selected {
+  background-color: #312e81 !important; /* Indigo 900 */
+}
