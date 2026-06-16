@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Tag, Spin, Card } from 'antd';
-import { ArrowLeftOutlined, ClockCircleOutlined, GlobalOutlined, CalendarOutlined, StarFilled } from '@ant-design/icons';
+import { Button, Tag, Spin, Card, Avatar } from 'antd';
+import { ArrowLeftOutlined, ClockCircleOutlined, GlobalOutlined, CalendarOutlined, StarFilled, PlayCircleOutlined } from '@ant-design/icons';
 import api from '../services/api';
-import type { Movie } from '../services/api';
 import { MOVIES } from '../data/movies';
+import type { Staff, MovieDetailResponse, DetailedMovieInfo } from '../types/movie';
 
+
+
+const genreMap: Record<string, string> = {
+  "12": "Adventure",
+  "13": "Fantasy",
+  "14": "Animation",
+  "15": "Drama",
+  "16": "Comedy",
+  "17": "History",
+  "18": "Thriller",
+  "19": "Horror",
+  "20": "Mystery",
+  "21": "Romance",
+  "22": "Sci-Fi",
+  "200": "Action",
+};
 
 const MovieDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [movie, setMovie] = useState<DetailedMovieInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,36 +34,83 @@ const MovieDetailPage: React.FC = () => {
       if (!id) return;
       setLoading(true);
       try {
-        // 1. Search in local MOVIES mock database first
-        let foundMovie = MOVIES.find((m) => m.id === id);
+        // Fetch from live api `/movie/:id`
+        const response = await api.get<MovieDetailResponse>(`/movie/${id}`);
+        const apiMovie = response.data.results?.[0];
 
-        // 2. If not in local data, fetch a list from live API and find it
-        if (!foundMovie) {
-          const response = await api.get('/movies/filter', {
-            params: { page: 0, type: 1, countryNot: 'Nigeria', countryNot2: 'Philippines' }
-          });
-          const results: Movie[] = response.data.results || [];
-          foundMovie = results.find((m) => m.id === id);
-        }
-
-        if (foundMovie) {
-          // Provide fallback values for detailed fields that are missing in backend filter results
-          const detailedMovie: Movie = {
-            ...foundMovie,
-            genre: foundMovie.genre || ["Drama", "Action"],
-            duration: foundMovie.duration || "120 min",
-            director: foundMovie.director || "Unknown Director",
-            cast: foundMovie.cast || ["Lead Actor", "Supporting Actor"],
-            plot: foundMovie.plot || "A fascinating story following the lives and unexpected events surrounding the characters in this cinematic masterpiece.",
-            votes: foundMovie.votes || Math.floor(Math.random() * 5000) + 500,
+        if (apiMovie) {
+          const detailedMovie: DetailedMovieInfo = {
+            title: apiMovie.title?.trim() || "Untitled",
+            id: apiMovie.id,
+            backdrop_path: apiMovie.backdrop_path,
+            release_date: apiMovie.release_date || "N/A",
+            media_type: apiMovie.media_type,
+            vote_average: apiMovie.vote_average || "0.0",
+            cn: apiMovie.country || "N/A",
+            genre: apiMovie.genre?.map((g: string) => genreMap[g] || g) || ["Drama"],
+            duration: apiMovie.duration || "120 min",
+            director: apiMovie.stafflist?.find((s: Staff) => s.staffType === 2)?.name || "Unknown Director",
+            cast: apiMovie.stafflist?.map((s: Staff) => `${s.name} (${s.character})`) || [],
+            plot: apiMovie.dis?.replace(/"/g, '') || "No description available.",
+            votes: Math.floor(Math.random() * 5000) + 1200,
+            stafflist: apiMovie.stafflist || [],
+            trailer: apiMovie.trailer || null,
+            subjectid: apiMovie.subjectid,
+            dp: apiMovie.dp,
           };
           setMovie(detailedMovie);
         } else {
-          setMovie(null);
+          // Fallback to local movies
+          const foundLocal = MOVIES.find((m) => m.id === id);
+          if (foundLocal) {
+            setMovie({
+              title: foundLocal.title,
+              id: foundLocal.id,
+              backdrop_path: foundLocal.backdrop_path,
+              release_date: foundLocal.release_date,
+              media_type: foundLocal.media_type,
+              vote_average: foundLocal.vote_average,
+              cn: foundLocal.cn,
+              genre: foundLocal.genre || ["Drama"],
+              duration: foundLocal.duration || "120 min",
+              director: foundLocal.director || "Unknown Director",
+              cast: foundLocal.cast || [],
+              plot: foundLocal.plot || "No description available.",
+              votes: foundLocal.votes || 1000,
+              stafflist: [],
+              trailer: null,
+              banner_backdrop: foundLocal.banner_backdrop,
+            });
+          } else {
+            setMovie(null);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch movie detail:', error);
-        setMovie(null);
+        // Fallback to local movies on error
+        const foundLocal = MOVIES.find((m) => m.id === id);
+        if (foundLocal) {
+          setMovie({
+            title: foundLocal.title,
+            id: foundLocal.id,
+            backdrop_path: foundLocal.backdrop_path,
+            release_date: foundLocal.release_date,
+            media_type: foundLocal.media_type,
+            vote_average: foundLocal.vote_average,
+            cn: foundLocal.cn,
+            genre: foundLocal.genre || ["Drama"],
+            duration: foundLocal.duration || "120 min",
+            director: foundLocal.director || "Unknown Director",
+            cast: foundLocal.cast || [],
+            plot: foundLocal.plot || "No description available.",
+            votes: foundLocal.votes || 1000,
+            stafflist: [],
+            trailer: null,
+            banner_backdrop: foundLocal.banner_backdrop,
+          });
+        } else {
+          setMovie(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -79,6 +142,11 @@ const MovieDetailPage: React.FC = () => {
     );
   }
 
+  // Generate dynamic play URL
+  const playUrl = movie.subjectid && movie.dp
+    ? `https://play.watch22.shop/play/watchbox.php?id=${movie.subjectid}&se=0&ep=0&dp=${movie.dp}&na=${encodeURIComponent(movie.title)}&ts=1781567451&sig=9d4700546caf16f35575ea98b780a6b65164e27bca45777263f72a48a28125d0&exten=true`
+    : '';
+
   return (
     <div className="min-h-screen text-slate-100 pb-12">
       {/* Banner/Backdrop Image */}
@@ -95,7 +163,7 @@ const MovieDetailPage: React.FC = () => {
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-10">
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             icon={<ArrowLeftOutlined />}
             className="bg-slate-900/80 hover:bg-slate-800/95 border-slate-800 hover:border-indigo-500 text-white font-medium rounded-xl h-11 px-5 flex items-center gap-1.5 transition-all shadow-lg backdrop-blur-sm"
           >
@@ -113,6 +181,22 @@ const MovieDetailPage: React.FC = () => {
             <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-950 aspect-[2/3] transform hover:scale-[1.01] transition-transform duration-300">
               <img src={movie.backdrop_path} alt={movie.title} className="w-full h-full object-cover" />
             </div>
+
+            {/* Play Button Card for Streaming */}
+            {playUrl && (
+              <div className="mt-6">
+                <Button
+                  type="primary"
+                  size="large"
+                  href={playUrl}
+                  target="_blank"
+                  icon={<PlayCircleOutlined className="text-xl" />}
+                  className="w-full h-14 bg-gradient-to-r from-red-600 via-pink-600 to-rose-600 hover:from-red-500 hover:to-rose-500 border-none text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-red-950/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  Watch Movie Now
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Right Column: Details */}
@@ -131,7 +215,7 @@ const MovieDetailPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-800">
                 <ClockCircleOutlined className="text-indigo-400" />
-                <span>{movie.duration}</span>
+                <span>{movie.duration !== "null" && movie.duration ? movie.duration : "120 min"}</span>
               </div>
               <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-800">
                 <GlobalOutlined className="text-indigo-400" />
@@ -156,7 +240,7 @@ const MovieDetailPage: React.FC = () => {
 
             {/* Genres */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-              {movie.genre.map((g) => (
+              {movie.genre.map((g: string) => (
                 <Tag key={g} bordered={false} className="bg-indigo-650/20 text-indigo-300 font-semibold px-4 py-1.5 rounded-full text-xs tracking-wider uppercase m-0 border border-indigo-500/20">
                   {g}
                 </Tag>
@@ -169,17 +253,57 @@ const MovieDetailPage: React.FC = () => {
               <p className="text-slate-300 text-base leading-relaxed">{movie.plot}</p>
             </div>
 
-            {/* Director and Cast */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 backdrop-blur-sm">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Director</h4>
-                <p className="text-white text-base font-bold">{movie.director}</p>
+            {/* Trailer Video Player */}
+            {movie.trailer && (
+              <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 mb-8 backdrop-blur-sm text-left">
+                <div className="flex items-center gap-2 mb-4">
+                  <PlayCircleOutlined className="text-indigo-400 text-xl" />
+                  <h3 className="text-lg font-bold text-white m-0">Official Trailer</h3>
+                </div>
+                <div className="aspect-video w-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+                  <video
+                    src={movie.trailer}
+                    controls
+                    className="w-full h-full object-cover"
+                    poster={movie.banner_backdrop || movie.backdrop_path}
+                  />
+                </div>
               </div>
-              <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 backdrop-blur-sm">
-                <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Starring</h4>
-                <p className="text-white text-base font-bold line-clamp-1">{movie.cast.join(', ')}</p>
+            )}
+
+            {/* Starring Cast List with Avatars */}
+            {movie.stafflist && movie.stafflist.length > 0 ? (
+              <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 text-left">
+                <h3 className="text-lg font-bold text-white mb-4">Starring Cast</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {movie.stafflist.map((staff: Staff) => (
+                    <div key={staff.staffId} className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/60 border border-slate-800/60 hover:border-indigo-500/30 transition-colors">
+                      <Avatar
+                        src={staff.avatarUrl}
+                        alt={staff.name}
+                        size={52}
+                        className="border border-slate-700 flex-shrink-0"
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-white font-bold text-sm truncate">{staff.name}</span>
+                        <span className="text-slate-400 text-xs truncate">{staff.character}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 backdrop-blur-sm">
+                  <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Director</h4>
+                  <p className="text-white text-base font-bold">{movie.director}</p>
+                </div>
+                <div className="bg-slate-900/40 border border-slate-900/80 rounded-2xl p-6 backdrop-blur-sm">
+                  <h4 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Starring</h4>
+                  <p className="text-white text-base font-bold line-clamp-1">{movie.cast.join(', ')}</p>
+                </div>
+              </div>
+            )}
 
           </div>
 

@@ -1,0 +1,64 @@
+{
+    "filters": [],
+    "pager": {
+        "current_page": 0,
+        "items_per_page": 30,
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "results": [
+        {
+            "title": "Jailer 2\n",
+            "id": "105761",
+            "backdrop_path": "https:\/\/pbcdnw.aoneroom.com\/image\/2026\/01\/26\/5f333d8a615d7e85ed21700f45c427e7.jpg",
+            "release_date": "Jun 12,2026",
+            "media_type": "tv",
+            "vote_average": "6.4",
+            "channel": [],
+            "season": null,
+            "genre": [
+                "200",
+                "12",
+                "13"
+            ],
+            "subjectid": "4764301619481691984",
+            "stafflist": [
+                {
+                    "staffId": "7861723647173349168",
+                    "staffType": 1,
+                    "name": "Mohanlal",
+                    "character": "Mathew",
+                    "avatarUrl": "https:\/\/pbcdnw.aoneroom.com\/image\/2022\/09\/02\/167d7ad7973f2437c46a083887cd7276.jpg",
+                    "detailPath": "mohanlal-edfOhwdMKm9"
+                },
+                {
+                    "staffId": "7310481293564071720",
+                    "staffType": 1,
+                    "name": "Rajinikanth",
+                    "character": "\u0027Tiger\u0027 Muthuvel Pandian",
+                    "avatarUrl": "https:\/\/pbcdnw.aoneroom.com\/image\/2024\/11\/03\/16c4bdb632123e5854a4213294a0ccb6.jpeg",
+                    "detailPath": "rajinikanth-w6ZA2L452I8"
+                },
+                {
+                    "staffId": "7520482109963077384",
+                    "staffType": 1,
+                    "name": "Yogi Babu",
+                    "character": "Vimal",
+                    "avatarUrl": "https:\/\/pbcdnw.aoneroom.com\/image\/2024\/04\/22\/7b59f95c1033fa67fb52b2c00cb62477.jpg",
+                    "detailPath": "yogi-babu-ISIByT2TxX8"
+                }
+            ],
+            "duration": null,
+            "country": "India",
+            "embed": null,
+            "dp": "R0xRRlNFTU5RQ2VlN2Q3Q0xQVUdhYSt1OVdvQ0hZQWp6SS9adkpBZjdYST0=",
+            "embed_en": false,
+            "dis": "\u0022Jailer 2\u0022",
+            "trailer": "https:\/\/macdn.aoneroom.com\/media\/vone\/2026\/02\/22\/f1d9d1853b804f28a0a6bd3d596d6ab9-ld.mp4"
+        }
+    ],
+    "sorters": [],
+    "system": {
+        "page_key": "page"
+    }
+}

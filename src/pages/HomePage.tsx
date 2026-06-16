@@ -7,7 +7,9 @@ import type { Movie } from '../services/api';
 
 import FiltersBar from '../components/FiltersBar';
 import MovieCard from '../components/MovieCard';
-import axios from 'axios';
+
+
+
 
 const PAGE_SIZE = 30;
 
@@ -25,24 +27,24 @@ const HomePage: React.FC = () => {
   const pageStr = searchParams.get('page') || '1';
   const page = parseInt(pageStr, 10) || 1;
 
-  useEffect(() => {
-    async function getSearchResult() {
-      try {
-        const { data: res } = await axios.get('https://api2.imdb4.shop/api/search2/bad+bo?page=0')
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getSearchResult()
-  }, [])
+  // useEffect(() => {
+  //   async function getSearchResult() {
+  //     try {
+  //       const { data: res } = await axios.get('https://api2.imdb4.shop/api/search2/bad+bo?page=0')
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   getSearchResult()
+  // }, [])
 
   useEffect(() => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
         let apiSortBy = 'date';
-        let apiSortOrder = 'desc';
+        // let apiSortOrder = 'desc';
 
         if (sortBy.startsWith('vote_average')) {
           apiSortBy = 'rating';
@@ -50,9 +52,9 @@ const HomePage: React.FC = () => {
           apiSortBy = 'date';
         }
 
-        if (sortBy.endsWith('asc')) {
-          apiSortOrder = 'asc';
-        }
+        // if (sortBy.endsWith('asc')) {
+        //   apiSortOrder = 'asc';
+        // }
 
         const params: {
           country?: string;
@@ -73,7 +75,7 @@ const HomePage: React.FC = () => {
           countryNot: 'Nigeria',
           countryNot2: 'Philippines',
           sort_by: apiSortBy,
-          sort_order: apiSortOrder,
+          // sort_order: apiSortOrder,
         };
 
         if (country) {

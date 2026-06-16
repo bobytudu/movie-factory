@@ -55,7 +55,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           </div>
 
           <div className="flex flex-wrap gap-1 mt-auto">
-            {movie.genre.slice(0, 3).map((g) => (
+            {movie.genre?.slice(0, 3).map((g) => (
               <Tag key={g} bordered={false} className="bg-slate-800 text-slate-300 text-[10px] px-1.5 py-0.5 rounded m-0">
                 {g}
               </Tag>
