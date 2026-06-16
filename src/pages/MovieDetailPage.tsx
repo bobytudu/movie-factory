@@ -146,6 +146,8 @@ const MovieDetailPage: React.FC = () => {
   const playUrl = movie.subjectid && movie.dp
     ? `https://play.watch22.shop/play/watchbox.php?id=${movie.subjectid}&se=0&ep=0&dp=${movie.dp}&na=${encodeURIComponent(movie.title)}&ts=1781567451&sig=9d4700546caf16f35575ea98b780a6b65164e27bca45777263f72a48a28125d0&exten=true`
     : '';
+  
+  console.log(movie)
 
   return (
     <div className="min-h-screen text-slate-100 pb-12">

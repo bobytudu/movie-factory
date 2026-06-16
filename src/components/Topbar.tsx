@@ -65,15 +65,21 @@ const Topbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-900 px-4 py-3 sm:px-8">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:bg-indigo-500 transition-colors">
-            <VideoCameraFilled className="text-xl text-white" />
-          </div>
-          <span className="text-xl font-extrabold tracking-wider bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-violet-300 transition-colors">
-            MOVIE FACTORY
-          </span>
-        </Link>
+        {/* Logo & Navigation */}
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:bg-indigo-500 transition-colors">
+              <VideoCameraFilled className="text-xl text-white" />
+            </div>
+            <span className="text-xl font-extrabold tracking-wider bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-violet-300 transition-colors">
+              MOVIE FACTORY
+            </span>
+          </Link>
+
+          <Link to="/scrapper" className="text-slate-300 hover:text-white transition-colors text-sm font-semibold tracking-wide flex items-center gap-1.5 border border-slate-900 bg-slate-900/40 hover:bg-slate-800 px-3 py-1.5 rounded-lg">
+            Scrapper View
+          </Link>
+        </div>
 
         {/* Searchbar */}
         <div className="w-full sm:w-96 relative">

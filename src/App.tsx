@@ -4,6 +4,7 @@ import { ConfigProvider, theme } from 'antd';
 import Topbar from './components/Topbar';
 import HomePage from './pages/HomePage';
 import MovieDetailPage from './pages/MovieDetailPage';
+import ScrapperPage from './pages/ScrapperPage';
 
 const App: React.FC = () => {
   return (
@@ -44,6 +45,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/movie/:id" element={<MovieDetailPage />} />
+              <Route path="/scrapper" element={<ScrapperPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
